@@ -1,12 +1,12 @@
 Package: AnnotationHubShiny
 Title: Serve AnnotationHub resources via Shiny
 Version: 0.99.0
-Authors@R: 
-    person(given = "Marcel",
-           family = "Ramos",
-           role = c("aut", "cre"),
-           email = "marcel.ramosperez@roswellpark.org",
-           comment = c(ORCID = "0000-0002-3242-0582"))
+Authors@R: c( 
+    person("Marcel", "Ramos", "M.", "marcel.ramosperez@roswellpark.org",
+      c("aut", "cre"), c(ORCID = "0000-0002-3242-0582")
+    ),
+    person("Vincent", "Carey", "J.", "stvjc@channing.harvard.edu", "ctb")
+  )
 Description: Uses DT or DataTable to display the AnnotationHub resources.
   The user can select one resource and download it to their local computer.
   When selecting multiple resources, the user will obtain a metadata
