@@ -48,6 +48,13 @@ shinyServer(
 
 # prepare output selections for download
 
+     observeEvent( input$tbl_rows_selected, {
+              if (length(input$tbl_rows_selected) != 1) 
+                  shinyjs::hide("btnSend2")
+              else
+                  shinyjs::show("btnSend2")
+              })
+
      output$btnSend <- downloadHandler(
               filename = function() {
                 msg = "ahub_md_sel_"
@@ -60,6 +67,7 @@ shinyServer(
                 },
               contentType="application/octet-stream"
               )
+
      output$btnSend2 <- downloadHandler(
               filename = function() {
                 msg = "ahub_sel_"
@@ -67,7 +75,6 @@ shinyServer(
                 },
               content = function(con) {
                    idx = input$tbl_rows_selected
-                   validate(need(length(idx)==1, "only one row may be selected for resource download."))
                    tag = rownames(fixAH(obj_AH)[idx,])
                    toastr_info(paste("retrieving", tag))
                    ans = obj_AH[[tag]]

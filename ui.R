@@ -1,7 +1,9 @@
 library(shinytoastr)
+library(shinyjs)
 shinyUI(
     fluidPage(
         useToastr(),
+        shinyjs::useShinyjs(),  # see https://stackoverflow.com/questions/53616176/shiny-use-validate-inside-downloadhandler
         titlePanel("Search for Annotation Hub resources"),
         sidebarLayout(
             sidebarPanel(
@@ -9,7 +11,7 @@ shinyUI(
                 textOutput("notes"),
                 downloadButton("btnSend", "Download metadata on selections"),
                 helpText("To download a resource, select only one row in the table."),
-                downloadButton("btnSend2", "Download selection"),
+                shinyjs::hidden(downloadButton("btnSend2", "Download selection")),
                 width = 3
             ),
             mainPanel(
