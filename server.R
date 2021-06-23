@@ -1,6 +1,8 @@
 library(AnnotationHub)
 library(shiny)
 library(shinytoastr)
+library(rtracklayer)
+
 options(repos = BiocManager::repositories())
 
 ## from interactiveDisplayBase:::.dataFrame3
