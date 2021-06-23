@@ -50,12 +50,28 @@ shinyServer(
 
      output$btnSend <- downloadHandler(
               filename = function() {
-                msg = "ahub_sel_"
+                msg = "ahub_md_sel_"
                 paste(msg, Sys.Date(), '.rds', sep='')
                 },
               content = function(con) {
                    idx = input$tbl_rows_selected
                    ans = fixAH(obj_AH)[idx,]
+                   saveRDS(ans, file=con)
+                },
+              contentType="application/octet-stream"
+              )
+     output$btnSend2 <- downloadHandler(
+              filename = function() {
+                msg = "ahub_sel_"
+                paste(msg, Sys.Date(), '.rds', sep='')
+                },
+              content = function(con) {
+                   idx = input$tbl_rows_selected
+                   validate(need(length(idx)==1, "only one row may be selected for resource download."))
+                   tag = rownames(fixAH(obj_AH)[idx,])
+                   toastr_info(paste("retrieving", tag))
+                   ans = obj_AH[[tag]]
+                   attr(ans, "_ahub_app_tag") = tag
                    saveRDS(ans, file=con)
                 },
               contentType="application/octet-stream"
