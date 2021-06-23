@@ -1,0 +1,5 @@
+^LICENSE\.md$
+^AnnotationHubShiny\.Rproj$
+^\.Rproj\.user$
+^app\.R$
+^rsconnect$

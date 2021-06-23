@@ -1,0 +1,26 @@
+Package: AnnotationHubShiny
+Title: Serve AnnotationHub resources via Shiny
+Version: 0.99.0
+Authors@R: 
+    person(given = "Marcel",
+           family = "Ramos",
+           role = c("aut", "cre"),
+           email = "marcel.ramosperez@roswellpark.org",
+           comment = c(ORCID = "0000-0002-3242-0582"))
+Description: Uses DT or DataTable to display the AnnotationHub resources.
+  The user can select one resource and download it to their local computer.
+  When selecting multiple resources, the user will obtain a metadata
+  data.frame.
+License: Artistic-2.0
+Depends: R (>= 4.1.0), shiny, AnnotationHub
+Imports:
+    DT,
+    shinyjs,
+    shinytoastr,
+    rtracklayer,
+    tidyselect,
+    pkgload
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
