@@ -59,7 +59,7 @@ AnnotationHubApp <- function(...) {
             # table rendering
 
             output$tbl <- DT::renderDataTable({
-                obj_AH <- getAH()
+                obj_AH <<- getAH()
                 fixAH(obj_AH)}, server = TRUE, filter = "top",
                 options = list(orderClasses = TRUE)
             )
