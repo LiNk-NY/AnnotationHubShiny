@@ -1,5 +1,3 @@
-utils::globalVariables("obj_AH")
-
 #' Initialize the shiny application for AnnotationHub resources
 #'
 #' The shiny app will allow the user to view a table of `AnnotationHub`
