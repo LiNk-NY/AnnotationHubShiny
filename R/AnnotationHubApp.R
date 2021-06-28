@@ -93,8 +93,10 @@ AnnotationHubApp <- function(...) {
 
             output$btnSend <- downloadHandler(
                 filename = function() {
-                    paste(msg, Sys.Date(), '.rds', sep='')
                     msg <- "ahub_md_sel_"
+                    paste(
+                        msg, format(Sys.time(), "%F_%Hh%Mm"), '.rds', sep=''
+                    )
                 },
                 content = function(con) {
                     idx <- input$tbl_rows_selected
@@ -106,8 +108,12 @@ AnnotationHubApp <- function(...) {
 
             output$btnSend2 <- downloadHandler(
                 filename = function() {
-                    msg = "ahub_sel_"
-                    paste(msg, Sys.Date(), '.rds', sep='')
+                    idx <- input$tbl_rows_selected
+                    ans <- fixAH(obj_AH)[idx,]
+                    paste0(
+                        rownames(ans), "_",
+                        format(Sys.time(), "%F_%Hh%Mm"), '.rds'
+                    )
                 },
                 content = function(con) {
                     idx <- input$tbl_rows_selected
