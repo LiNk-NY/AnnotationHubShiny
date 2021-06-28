@@ -56,9 +56,13 @@ AnnotationHubApp <- function(...) {
 
             # table rendering
 
-            output$tbl <- DT::renderDataTable({
-                obj_AH <<- getAH()
-                fixAH(obj_AH)}, server = TRUE, filter = "top",
+            output$tbl <- DT::renderDataTable(
+                {
+                    obj_AH <<- getAH()
+                    fixAH(obj_AH)
+                },
+                server = TRUE,
+                filter = "top",
                 options = list(orderClasses = TRUE)
             )
 
@@ -71,9 +75,9 @@ AnnotationHubApp <- function(...) {
                 txt
             })
             output$notes = renderText({
-                tab = fixAH(obj_AH)
-                nrec = nrow(tab)
-                nspec = length(unique(tab$species))
+                tab <- fixAH(obj_AH)
+                nrec <- nrow(tab)
+                nspec <- length(unique(tab$species))
                 sprintf("There are %d AnnotationHub resources available on
                         %d distinct species.", nrec, nspec)
             })
@@ -89,12 +93,12 @@ AnnotationHubApp <- function(...) {
 
             output$btnSend <- downloadHandler(
                 filename = function() {
-                    msg = "ahub_md_sel_"
                     paste(msg, Sys.Date(), '.rds', sep='')
+                    msg <- "ahub_md_sel_"
                 },
                 content = function(con) {
-                    idx = input$tbl_rows_selected
-                    ans = fixAH(obj_AH)[idx,]
+                    idx <- input$tbl_rows_selected
+                    ans <- fixAH(obj_AH)[idx,]
                     saveRDS(ans, file=con)
                 },
                 contentType="application/octet-stream"
