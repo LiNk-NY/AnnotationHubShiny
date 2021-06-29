@@ -46,6 +46,11 @@ AnnotationHubApp <- function(...) {
             fixAH <- function(object) {  # can filter columns here if desired
                 md <- mcols(object)
                 ans <- as.data.frame(md)
+                ans <- ans[,
+                    -which(names(ans) %in%
+                        c("rdataclass", "rdatapath", "sourceurl",
+                          "sourcetype", "preparerclass"))
+                ]
                 ans$tags <- vapply(
                     unname(unclass(md$tags)),
                     base::paste,
