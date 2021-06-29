@@ -21,6 +21,8 @@ Imports:
     tidyselect,
     pkgload
 Encoding: UTF-8
+BugReports: https://github.com/LiNk-NY/AnnotationHubShiny/issues
+URL: https://github.com/LiNk-NY/AnnotationHubShiny
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
