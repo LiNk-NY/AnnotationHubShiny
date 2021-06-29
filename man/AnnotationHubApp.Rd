@@ -11,6 +11,15 @@ AnnotationHubApp(...)
 }
 \description{
 The shiny app will allow the user to view a table of \code{AnnotationHub}
-resources including \code{AnnotationHub} identifiers which are important for
-download.
+resources. The user can select a single resource for download or select
+multiple resources to download a \code{data.frame} of metadata that includes
+\code{AnnotationHub} identifiers used to download, i.e. in pseudocode:
+\code{AH[["Identifier"]]}.
+}
+\details{
+Note. The code here was adapted from \code{interactiveDisplayBase} and
+\code{?'display,Hub-method'}.
+}
+\seealso{
+?\code{interactiveDisplayBase::display}, ?\verb{display,Hub-method}
 }

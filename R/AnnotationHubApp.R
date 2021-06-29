@@ -1,8 +1,15 @@
 #' Initialize the shiny application for AnnotationHub resources
 #'
 #' The shiny app will allow the user to view a table of `AnnotationHub`
-#' resources including `AnnotationHub` identifiers which are important for
-#' download.
+#' resources. The user can select a single resource for download or select
+#' multiple resources to download a `data.frame` of metadata that includes
+#' `AnnotationHub` identifiers used to download, i.e. in pseudocode:
+#' `AH[["Identifier"]]`.
+#'
+#' @details Note. The code here was adapted from `interactiveDisplayBase` and
+#' `?'display,Hub-method'`.
+#'
+#' @seealso ?`interactiveDisplayBase::display`, ?`display,Hub-method`
 #'
 #' @param ... Further arguments to the `runApp` function
 #'
