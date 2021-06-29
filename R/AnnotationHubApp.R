@@ -1,3 +1,14 @@
+.getInit <- function(ahid = "enterIDhere") {
+    sprintf(
+"
+## Use this code to download the resource
+library(AnnotationHub)
+ah <- AnnotationHub()
+ah[['%s']]
+", ahid
+    )
+}
+
 #' Initialize the shiny application for AnnotationHub resources
 #'
 #' The shiny app will allow the user to view a table of `AnnotationHub`
@@ -23,17 +34,28 @@ AnnotationHubApp <- function(...) {
             shinytoastr::useToastr(),
             shinyjs::useShinyjs(),  # see https://stackoverflow.com/questions/53616176/shiny-use-validate-inside-downloadhandler
             titlePanel("Search for Annotation Hub resources"),
-            sidebarLayout(
-                sidebarPanel(
-                    helpText("Use search box in table to filter records.  Click on rows to select for downloading the metadata."),
+
+            DT::dataTableOutput('tbl'),
+
+            hr(),
+
+            fluidRow(
+                column(4,
+
+                    helpText("Use search box in table to filter records. Click on rows and download the metadata."),
                     textOutput("notes"),
-                    downloadButton("btnSend", "Download metadata on selections"),
+                    downloadButton("btnSend", "Download metadata"),
                     helpText("To download a resource, select only one row in the table."),
-                    shinyjs::hidden(downloadButton("btnSend2", "Download selection")),
-                    width = 3
+                    shinyjs::hidden(downloadButton("btnSend2", "Download resource"))
+
                 ),
-                mainPanel(
-                    DT::dataTableOutput('tbl')
+                column(6,
+                    aceEditor(
+                        outputId = "code",
+                        selectionId = "selection",
+                        value = .getInit(),
+                        mode = "r"
+                    )
                 )
             )
         )
@@ -53,6 +75,11 @@ AnnotationHubApp <- function(...) {
             fixAH <- function(object) {  # can filter columns here if desired
                 md <- mcols(object)
                 ans <- as.data.frame(md)
+                ans <- as.data.frame(
+                    append(as.list(ans), list(AHID = rownames(ans)), 0L),
+                    row.names = NULL
+                )
+
                 ans <- ans[,
                     -which(names(ans) %in%
                         c("rdataclass", "rdatapath", "sourceurl",
@@ -78,30 +105,40 @@ AnnotationHubApp <- function(...) {
                 options = list(orderClasses = TRUE)
             )
 
-            output$notesBAD = renderText({
-                orgs = sort(table(fixAH(obj_AH)$species), decreasing=TRUE)
-                txt = sprintf("Total of %d records.  Top three species: %s (%d records),
-                            %s (%d), %s (%d).", nrow(obj_AH), names(orgs)[1], as.numeric(orgs)[1],
-                              names(orgs)[2], as.numeric(orgs)[2],
-                              names(orgs)[3], as.numeric(orgs)[3])
-                txt
-            })
             output$notes = renderText({
                 tab <- fixAH(obj_AH)
                 nrec <- nrow(tab)
                 nspec <- length(unique(tab$species))
-                sprintf("There are %d AnnotationHub resources available on
-                        %d distinct species.", nrec, nspec)
+                sprintf(
+                    "%d AnnotationHub resources from %d distinct species.",
+                    nrec, nspec
+                )
             })
 
             # prepare output selections for download
 
-            observeEvent( input$tbl_rows_selected, {
-                if (length(input$tbl_rows_selected) != 1)
-                    shinyjs::hide("btnSend2")
-                else
-                    shinyjs::show("btnSend2")
-            })
+            observeEvent(
+                input$tbl_rows_selected,
+                {
+                    if (length(input$tbl_rows_selected) == 1) {
+                        shinyjs::show("btnSend2")
+                        idx <- input$tbl_rows_selected
+                        ans <- fixAH(obj_AH)[idx,]
+                        updateAceEditor(
+                            session,
+                            "code",
+                            value = .getInit(ans$AHID)
+                        )
+                    } else if (length(input$tbl_rows_selected) > 1) {
+                        shinyjs::hide("btnSend2")
+                        updateAceEditor(
+                            session,
+                            "code",
+                            value = .getInit()
+                        )
+                    }
+                }
+            )
 
             output$btnSend <- downloadHandler(
                 filename = function() {
@@ -123,13 +160,13 @@ AnnotationHubApp <- function(...) {
                     idx <- input$tbl_rows_selected
                     ans <- fixAH(obj_AH)[idx,]
                     paste0(
-                        rownames(ans), "_",
+                        ans[["AHID"]], "_",
                         format(Sys.time(), "%F_%Hh%Mm"), '.rds'
                     )
                 },
                 content = function(con) {
                     idx <- input$tbl_rows_selected
-                    tag <- rownames(fixAH(obj_AH)[idx,])
+                    tag <- fixAH(obj_AH)[idx, "AHID"]
                     shinytoastr::toastr_info(paste("retrieving", tag))
                     ans <- obj_AH[[tag]]
                     attr(ans, "_ahub_app_tag") = tag
