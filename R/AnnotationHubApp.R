@@ -1,9 +1,9 @@
-.getInit <- function(ahid = "enterIDhere") {
+.getInit <- function(ahid = "click_a_row") {
     sprintf(
-"
-## Use this code to download the resource
+"## Use this code to download a resource
 library(AnnotationHub)
 ah <- AnnotationHub()
+## Select a _single_ row
 ah[['%s']]
 ", ahid
     )
@@ -33,7 +33,7 @@ AnnotationHubApp <- function(...) {
         fluidPage(
             shinytoastr::useToastr(),
             shinyjs::useShinyjs(),  # see https://stackoverflow.com/questions/53616176/shiny-use-validate-inside-downloadhandler
-            titlePanel("Search for Annotation Hub resources"),
+            titlePanel(textOutput("notes")),
 
             DT::dataTableOutput('tbl'),
 
@@ -42,11 +42,21 @@ AnnotationHubApp <- function(...) {
             fluidRow(
                 column(4,
 
-                    helpText("Use search box in table to filter records. Click on rows and download the metadata."),
-                    textOutput("notes"),
+                    h3("Download instructions"),
+                    helpText(
+                        "To download a resource, select a single row and",
+                        "run the code in an R session."
+                    ),
+                    helpText(
+                        "Tip: Use the search box at the top right",
+                        "of the table to filter records."
+                    ),
+                    br(),
+                    helpText("Select multiple rows to download metadata."),
+                    br(),
                     downloadButton("btnSend", "Download metadata"),
-                    helpText("To download a resource, select only one row in the table."),
-                    shinyjs::hidden(downloadButton("btnSend2", "Download resource"))
+                    br()
+                    # shinyjs::hidden(downloadButton("btnSend2", "Download resource"))
 
                 ),
                 column(6,
@@ -110,7 +120,7 @@ AnnotationHubApp <- function(...) {
                 nrec <- nrow(tab)
                 nspec <- length(unique(tab$species))
                 sprintf(
-                    "%d AnnotationHub resources from %d distinct species.",
+                    "Search through %d AnnotationHub resources from %d distinct species",
                     nrec, nspec
                 )
             })
