@@ -50,7 +50,7 @@ AnnotationHubApp <- function(...) {
 
                 ),
                 column(6,
-                    aceEditor(
+                    shinyAce::aceEditor(
                         outputId = "code",
                         selectionId = "selection",
                         value = .getInit(),
@@ -124,14 +124,14 @@ AnnotationHubApp <- function(...) {
                         shinyjs::show("btnSend2")
                         idx <- input$tbl_rows_selected
                         ans <- fixAH(obj_AH)[idx,]
-                        updateAceEditor(
+                        shinyAce::updateAceEditor(
                             session,
                             "code",
                             value = .getInit(ans$AHID)
                         )
                     } else if (length(input$tbl_rows_selected) > 1) {
                         shinyjs::hide("btnSend2")
-                        updateAceEditor(
+                        shinyAce::updateAceEditor(
                             session,
                             "code",
                             value = .getInit()
