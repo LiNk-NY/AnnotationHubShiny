@@ -1,6 +1,13 @@
 .getInit <- function(ahid = "enterIDhere") {
     sprintf(
 "
+## Make sure BiocManager is installed
+if (!requireNamespace('BiocManager', quietly = TRUE))
+    install.packages('BiocManager')
+## Make sure AnnotationHub is installed
+if (!requireNamespace('AnnotationHub', quietly = TRUE))
+    BiocManager::install('AnnotationHub')
+
 ## Use this code to download the resource
 library(AnnotationHub)
 ah <- AnnotationHub()
