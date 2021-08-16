@@ -41,7 +41,7 @@ AnnotationHubApp <- function(...) {
         fluidPage(
             shinytoastr::useToastr(),
             shinyjs::useShinyjs(),  # see https://stackoverflow.com/questions/53616176/shiny-use-validate-inside-downloadhandler
-            titlePanel(textOutput("notes")),
+            titlePanel(textOutput("notes"), windowTitle = "AnnotationHubShiny"),
 
             DT::dataTableOutput('tbl'),
 
@@ -75,7 +75,19 @@ AnnotationHubApp <- function(...) {
                         mode = "r"
                     )
                 )
+            ),
+            hr(),
+            tags$footer(
+                HTML(
+                    paste0("AnnotationHubShiny version: ",
+                    packageVersion("AnnotationHubShiny"), "<br>",
+                    "Last updated: 2021-08-16", "<br>",
+                    "<a href='https://github.com/LiNk-NY/AnnotationHubShiny' class='fa fa-github'></a>")
+                ), align = "center", style = "
+                    bottom:0; width:100%; height:80px; /* Height of footer */
+                    color: darkblue; padding: 10px; background-color: lightgray;"
             )
+
         )
 
         ## from interactiveDisplayBase:::.dataFrame3
