@@ -39,56 +39,77 @@ ah[['%s']]
 AnnotationHubApp <- function(...) {
     ui <-
         fluidPage(
-            shinytoastr::useToastr(),
-            shinyjs::useShinyjs(),  # see https://stackoverflow.com/questions/53616176/shiny-use-validate-inside-downloadhandler
-            titlePanel(textOutput("notes"), windowTitle = "AnnotationHubShiny"),
+         shinytoastr::useToastr(),
+         shinyjs::useShinyjs(),  # see https://stackoverflow.com/questions/53616176/shiny-use-validate-inside-downloadhandler
+         titlePanel(textOutput("notes"), windowTitle = "AnnotationHubShiny"),
+         sidebarLayout(
+          sidebarPanel(
+            helpText("Searchable annotation by Bioconductor"),
+            helpText(" "),
+            helpText(paste(c("Click a row of interest in the main table,",
+	     "and a code chunk will be formed in the 'download' tab",
+	     "that can be run to retrieve the desired annotation."), collapse=" ")),
+            helpText(" "),
+            helpText(paste(c("To retrieve metadata on multiple annotation resources",
+             "click on multiple rows of the main table",
+	     "and use the 'Download metadata' button on the 'download' tab",
+	     "to receive a date-stamped RDS file with metadata."), collapse=" ")),
+            helpText(" "),
+            actionButton("stopBtn", "Stop app."),
+            width=2),
+          mainPanel(
+           tabsetPanel(
+            tabPanel("main", {
+              DT::dataTableOutput('tbl')
+              }),
+            tabPanel("download", {
+              fluidRow(
+                  column(4,
+  
+                      h3("Download instructions"),
+                      helpText(
+                          "To download a resource, select a single row and",
+                          "run the code in an R session."
+                      ),
+                      helpText(
+                          "Tip: Use the search box at the top right",
+                          "of the table to filter records."
+                      ),
+                      br(),
+                      helpText("Select multiple rows to download metadata."),
+                      br(),
+                      downloadButton("btnSend", "Download metadata"),
+                      br()
+                      # shinyjs::hidden(downloadButton("btnSend2", "Download resource"))
+  
+                  ),
+                  column(6,
+                      shinyAce::aceEditor(
+                          outputId = "code",
+                          selectionId = "selection",
+                          value = .getInit(),
+                          mode = "r"
+                      )
+                  )
+              )
+              }
+              ), # end download panel
+            tabPanel("about", { 
+                  HTML(
+                      paste0("AnnotationHubShiny version: ",
+                      packageVersion("AnnotationHubShiny"), "<br>",
+                      "Last updated: 2021-08-16", "<br>", "Sources: ",
+                      "<a href='https://github.com/LiNk-NY/AnnotationHubShiny' class='fa fa-github'></a>")
+                  )#, align = "center", style = "
+                   #   bottom:0; width:100%; height:80px; /* Height of footer */
+                   #   color: darkblue; padding: 10px; background-color: lightgray;"
+                }
+              )  # end about panel
+             ) # end tabset panel
+            ) # end main panel
+           ) # end sidebarlayout
 
-            DT::dataTableOutput('tbl'),
-
-            hr(),
-
-            fluidRow(
-                column(4,
-
-                    h3("Download instructions"),
-                    helpText(
-                        "To download a resource, select a single row and",
-                        "run the code in an R session."
-                    ),
-                    helpText(
-                        "Tip: Use the search box at the top right",
-                        "of the table to filter records."
-                    ),
-                    br(),
-                    helpText("Select multiple rows to download metadata."),
-                    br(),
-                    downloadButton("btnSend", "Download metadata"),
-                    br()
-                    # shinyjs::hidden(downloadButton("btnSend2", "Download resource"))
-
-                ),
-                column(6,
-                    shinyAce::aceEditor(
-                        outputId = "code",
-                        selectionId = "selection",
-                        value = .getInit(),
-                        mode = "r"
-                    )
-                )
-            ),
-            hr(),
-            tags$footer(
-                HTML(
-                    paste0("AnnotationHubShiny version: ",
-                    packageVersion("AnnotationHubShiny"), "<br>",
-                    "Last updated: 2021-08-16", "<br>",
-                    "<a href='https://github.com/LiNk-NY/AnnotationHubShiny' class='fa fa-github'></a>")
-                ), align = "center", style = "
-                    bottom:0; width:100%; height:80px; /* Height of footer */
-                    color: darkblue; padding: 10px; background-color: lightgray;"
-            )
-
-        )
+        ) # end fluidpage 
 
         ## from interactiveDisplayBase:::.dataFrame3
     server <-
@@ -146,6 +167,11 @@ AnnotationHubApp <- function(...) {
             })
 
             # prepare output selections for download
+
+    observeEvent(input$stopBtn, {
+       stopApp(returnValue=NULL)   # could return information here
+       })
+
 
             observeEvent(
                 input$tbl_rows_selected,
