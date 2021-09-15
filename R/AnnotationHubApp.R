@@ -59,10 +59,10 @@ AnnotationHubApp <- function(...) {
             width=2),
           mainPanel(
            tabsetPanel(
-            tabPanel("main", {
+            tabPanel("Resources", {
               DT::dataTableOutput('tbl')
               }),
-            tabPanel("download", {
+            tabPanel("Download", {
               fluidRow(
                   column(4,
 
@@ -94,7 +94,7 @@ AnnotationHubApp <- function(...) {
               )
               }
               ), # end download panel
-            tabPanel("about", {
+            tabPanel("About", {
                   HTML(
                       paste0("AnnotationHubShiny version: ",
                       packageVersion("AnnotationHubShiny"), "<br>",
