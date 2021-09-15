@@ -45,16 +45,16 @@ AnnotationHubApp <- function(...) {
          sidebarLayout(
           sidebarPanel(
             helpText("Searchable annotation by Bioconductor"),
-            helpText(" "),
+            br(),
             helpText(paste(c("Click a row of interest in the main table,",
 	     "and a code chunk will be formed in the 'download' tab",
 	     "that can be run to retrieve the desired annotation."), collapse=" ")),
-            helpText(" "),
+            br(),
             helpText(paste(c("To retrieve metadata on multiple annotation resources",
              "click on multiple rows of the main table",
 	     "and use the 'Download metadata' button on the 'download' tab",
 	     "to receive a date-stamped RDS file with metadata."), collapse=" ")),
-            helpText(" "),
+            br(),
             actionButton("stopBtn", "Stop app."),
             width=2),
           mainPanel(
@@ -65,7 +65,7 @@ AnnotationHubApp <- function(...) {
             tabPanel("download", {
               fluidRow(
                   column(4,
-  
+
                       h3("Download instructions"),
                       helpText(
                           "To download a resource, select a single row and",
@@ -81,7 +81,7 @@ AnnotationHubApp <- function(...) {
                       downloadButton("btnSend", "Download metadata"),
                       br()
                       # shinyjs::hidden(downloadButton("btnSend2", "Download resource"))
-  
+
                   ),
                   column(6,
                       shinyAce::aceEditor(
@@ -94,7 +94,7 @@ AnnotationHubApp <- function(...) {
               )
               }
               ), # end download panel
-            tabPanel("about", { 
+            tabPanel("about", {
                   HTML(
                       paste0("AnnotationHubShiny version: ",
                       packageVersion("AnnotationHubShiny"), "<br>",
@@ -109,7 +109,7 @@ AnnotationHubApp <- function(...) {
             ) # end main panel
            ) # end sidebarlayout
 
-        ) # end fluidpage 
+        ) # end fluidpage
 
         ## from interactiveDisplayBase:::.dataFrame3
     server <-
