@@ -41,7 +41,7 @@ AnnotationHubApp <- function(...) {
          shinytoastr::useToastr(),
          shinyjs::useShinyjs(),  # see https://stackoverflow.com/questions/53616176/shiny-use-validate-inside-downloadhandler
          titlePanel(textOutput("notes"), windowTitle = "AnnotationHubShiny"),
-         img(src = "bioconductor_logo_cymk.png", align = "right"),
+             img(src = "images/bioconductor_logo_cmyk.png", align = "right"),
          sidebarLayout(
           sidebarPanel(
             h2("Instructions for resource download"),
