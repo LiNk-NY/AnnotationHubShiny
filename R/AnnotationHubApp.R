@@ -1,5 +1,5 @@
 .getInit <- function(ahid = "click_a_row") {
-    paste(
+    paste0(
 "## Make sure BiocManager is installed
 if (!require('BiocManager', quietly = TRUE))
     install.packages('BiocManager')
@@ -41,34 +41,39 @@ AnnotationHubApp <- function(...) {
          shinytoastr::useToastr(),
          shinyjs::useShinyjs(),  # see https://stackoverflow.com/questions/53616176/shiny-use-validate-inside-downloadhandler
          titlePanel(textOutput("notes"), windowTitle = "AnnotationHubShiny"),
-             img(src = "images/bioconductor_logo_cmyk.png", align = "right"),
          sidebarLayout(
           sidebarPanel(
-            h2("Instructions for resource download"),
+            h3("Instructions for resource download"),
             br(),
-            h3(
+            h4(
                 "1. Click the rows of interest in the main table",
             ),
             br(),
-            h3(
+            h4(
                 "2. Go to the 'Download' tab",
             ),
             br(),
-            h3(
+            h4(
                 "3. Copy, paste, and run the generated code in your R session",
             ),
             br(),
             helpText(
                 paste(c(
-                    "To retrieve the metadata (a date-stamped RDS file)",
-                    "for your selection, use the 'Download metadata'",
-                    "button on the 'Download' tab."
+                    "To retrieve the metadata for your selection",
+                    "as a date-stamped RDS file, go to the 'Download' tab and",
+                    "select the 'Download metadata' button."
                 ), collapse=" ")
             ),
             br(),
             actionButton("stopBtn", "Stop AnnotationHubShiny"),
             width=2),
           mainPanel(
+             div(style = "margin-right:10px",
+                img(
+                    src = "images/bioconductor_logo_rgb_small.png",
+                    align = "right"
+                )
+             ),
            tabsetPanel(
             tabPanel("Resources", {
                   DT::dataTableOutput('tbl')
@@ -76,18 +81,21 @@ AnnotationHubApp <- function(...) {
             tabPanel("Download", {
               fluidRow(
                   column(4,
-
-                      h3("Download instructions"),
+                      h3("Download resources"),
                       helpText(
-                          "To download resources, select the rows and",
-                          "then run the code in an R session."
+                          "Select rows of interest and then run the code",
+                          "in an R session."
                       ),
                       helpText(
-                          "Tip: Use the search box at the top right",
-                          "of the table to filter records."
+                          strong("Tip"), ": Use the search box at the top",
+                          "right of the table to filter records."
                       ),
                       br(),
-                      helpText("Select multiple rows to download metadata."),
+                      h3("Download metadata"),
+                      br(),
+                      helpText(
+                          "Select rows and click 'Download metadata'."
+                      ),
                       br(),
                       downloadButton("btnSend", "Download metadata"),
                   ),
@@ -105,14 +113,19 @@ AnnotationHubApp <- function(...) {
             tabPanel("About", {
                   HTML(
                       paste0("AnnotationHubShiny version: ",
-                      packageVersion("AnnotationHubShiny"), "<br>",
-                      "Last updated: 2021-11-15", "<br>", "Sources: ",
+                      packageVersion("AnnotationHubShiny"),
+                      "<br>",
+                      "Last updated: 2021-11-15",
+                      "<br>",
+                      "Sources: ",
                       "<a href='https://github.com/LiNk-NY/AnnotationHubShiny' class='fa fa-github'></a>")
-                  )#, align = "center", style = "
+                  )
+                   #, align = "center", style = "
                    #   bottom:0; width:100%; height:80px; /* Height of footer */
                    #   color: darkblue; padding: 10px; background-color: lightgray;"
                 }
-              )  # end about panel
+              ),  # end about panel
+            tabPanel("SessionInfo", verbatimTextOutput("sessionInfo"))
              ) # end tabset panel
             ) # end main panel
            ) # end sidebarlayout
@@ -127,7 +140,7 @@ AnnotationHubApp <- function(...) {
             getAH <- reactive({
                 # let the user know that action is ongoing during loading
                 shinytoastr::toastr_info(
-                    "retrieving AnnotationHub...", timeOut=2000
+                    "retrieving AnnotationHub...", timeOut=3000
                 )
                 ah <<- AnnotationHub()
                 md <- mcols(ah)
@@ -154,9 +167,9 @@ AnnotationHubApp <- function(...) {
             output$tbl <- DT::renderDataTable(
                 {
                     shinytoastr::toastr_info(
-                        "loading AnnotationHub data...", timeOut=2000
+                        "loading AnnotationHub data...", timeOut=4500
                     )
-                    on.exit({shinytoastr::toastr_info("done.", timeOut=500)})
+                    on.exit({shinytoastr::toastr_info("done.", timeOut=2500)})
                     obj_AH <<- getAH()
                 },
                 server = TRUE,
@@ -211,6 +224,9 @@ AnnotationHubApp <- function(...) {
                 },
                 contentType="application/octet-stream"
             )
+            output$sessionInfo <- renderPrint({
+                capture.output(sessionInfo())
+            })
         }
 
     shinyApp(ui, server, ...)
